@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -13,8 +13,8 @@ export class ReservationsController {
   @Get()
   @Roles(UserRole.ADMIN, UserRole.STAFF)
   async getReservations(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 5,
   ) {
     return this.reservationsService.getReservations(page, limit);
   }
@@ -22,8 +22,8 @@ export class ReservationsController {
   @Get('with-customers')
   @Roles(UserRole.ADMIN)
   async getReservationsWithCustomers(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 5,
   ) {
     return this.reservationsService.getReservationsWithCustomers(page, limit);
   }

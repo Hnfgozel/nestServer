@@ -193,6 +193,7 @@ export class FirebaseService implements OnModuleInit {
         return {
           id: doc.id,
           ...data,
+          date: data.date.toDate().toISOString(),
           customers,
         };
       })
@@ -211,9 +212,14 @@ export class FirebaseService implements OnModuleInit {
     const reservationsWithAI = await Promise.all(
       result.data.map(async (reservation) => {
         const aiDataDoc = await this.firestore.collection('aiData').doc(reservation.id).get();
+        const aiData = aiDataDoc.exists ? aiDataDoc.data() : null;
+        
         return {
           ...reservation,
-          aiData: aiDataDoc.exists ? aiDataDoc.data() : null,
+          aiData: aiData ? {
+            ...aiData,
+            generatedAt: aiData.generatedAt.toDate().toISOString(),
+          } : null,
         };
       })
     );
